@@ -3,6 +3,7 @@ package org.mufold.rebase.geneEditRebase;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.io.*;
 
@@ -10,6 +11,7 @@ import org.apache.commons.io.FileUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.jsoup.nodes.Node;
 import org.jsoup.select.Elements;
 
 /**
@@ -21,25 +23,42 @@ public class App
     public static void main( String[] args )
     {
     	App app = new App();
-        
-    	try{
+    	/*
+    	System.out.println(app.seqgetStr("AcuI"));
+    	System.out.println(app.seqgetStr("AbaAI"));
+    	System.out.println(app.seqgetStr("AbaBGI"));
+    	System.out.println(app.seqgetStr("AbaCI"));
+    	*/
+    	try{  
     		
-    		Document document = Jsoup.parse( new File( "E:\\REBASE\\REBASE Enzymes.html" ) , "utf-8" );
+    		//Document document = Jsoup.parse( new File( "E:\\REBASE\\NoPutative\\REBASE Enzymes.html" ) , "utf-8" );
+    		Document document = Jsoup.parse( new File( "E:\\REBASE\\Putative\\REBASE Enzymes.html" ) , "utf-8" );
     		Elements links = document.select("tr");
     		ArrayList<String> al = new ArrayList<String>();
     		int i=0;
     	    for (Element link : links) 
-    	    {
+    	    {    	    	
     	    	if(link.attributes().toString().trim().equals("bgcolor=\"#FFFFFF\"")){
     	    		//System.out.println("link : " + link.attributes()); 
-    	    		//System.out.println("text : " + link.text());   	    		
+    	    		//System.out.println("text : " + link.text()); 
     	    		String[] tmpArray = link.text().split("\\s+");
-    	    		al.add(tmpArray[0]+";"+tmpArray[1]+";"+app.individualStr(tmpArray[0]));
+    	    		List<Node> nodeList = link.childNodes().get(3).childNodes().get(0).childNodes().get(0).childNodes();
+    	    		//System.out.println(nodeList.size());
+    	    		String reSequence = "";
+    	    		for(Node node:nodeList){
+    	    			if(node.toString().startsWith("<img")){
+    	    				reSequence += "^";
+    	    			}else{
+    	    				reSequence += node;
+    	    			}
+    	    		}
+    	    		
+    	    		al.add(tmpArray[0]+";"+reSequence+";"+app.individualStr(tmpArray[0])+app.seqgetStr(tmpArray[0]));
     	    		i++;
     	    	}
     	    }
-    	    FileUtils.writeLines(new File("E:\\REBASE\\rebaseall_putative.txt"), al);
-    	      
+    	    //FileUtils.writeLines(new File("E:\\REBASE\\rebaseall_NoPutative.txt"), al);
+    	    FileUtils.writeLines(new File("E:\\REBASE\\rebaseall_Putative.txt"), al); 
 
     	    //Another version
     	    /*
@@ -75,6 +94,33 @@ public class App
     	}
     }
     
+    String seqgetStr(String proteinName){
+    	String outStr = "";
+    	try{
+    		Document document = Jsoup.connect("http://rebase.neb.com/cgi-bin/seqget?"+proteinName).get();
+    		Elements links = document.select("a[href]");
+    		String proteinIdTag = "";
+    		String giTag = "";
+    		String uniprotKBTag = "";
+    		
+    		for (Element link : links){
+    			if(link.attr("target").equals("nih")){
+    				proteinIdTag = link.text();
+    			}else if(link.attr("target").equals("gi")){
+    				giTag = link.text();
+    			}else if(link.attr("target").equals("uni")){
+    				uniprotKBTag = link.text();
+    			}   			
+    		}
+    		outStr = proteinIdTag + ";" + giTag + ";" + uniprotKBTag + ";";
+    		
+    	}catch(Exception ex){
+    		System.out.println(proteinName);
+    		ex.printStackTrace();
+    	}    	
+    	return outStr;
+    	
+    }
     
     String individualStr(String proteinName){
     	String outStr = "";
