@@ -31,5 +31,10 @@
     	<artifactId>commons-io</artifactId>
     	<version>2.5</version>
 	</dependency>
+	<dependency>
+      <groupId>org.biojava</groupId>
+      <artifactId>biojava-core</artifactId>
+      <version>4.2.0</version>
+    </dependency>
   </dependencies>
 </project>

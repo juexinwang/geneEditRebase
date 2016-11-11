@@ -18,18 +18,11 @@ import org.jsoup.select.Elements;
  * Main class
  *
  */
-public class App 
+public class PrepareInput 
 {
-    public static void main( String[] args )
-    {
-    	App app = new App();
-    	/*
-    	System.out.println(app.seqgetStr("AcuI"));
-    	System.out.println(app.seqgetStr("AbaAI"));
-    	System.out.println(app.seqgetStr("AbaBGI"));
-    	System.out.println(app.seqgetStr("AbaCI"));
-    	*/
-    	try{  
+	
+	void func(){
+		try{  
     		
     		//Document document = Jsoup.parse( new File( "E:\\REBASE\\NoPutative\\REBASE Enzymes.html" ) , "utf-8" );
     		Document document = Jsoup.parse( new File( "E:\\REBASE\\Putative\\REBASE Enzymes.html" ) , "utf-8" );
@@ -53,7 +46,7 @@ public class App
     	    			}
     	    		}
     	    		
-    	    		al.add(tmpArray[0]+";"+reSequence+";"+app.individualStr(tmpArray[0])+app.seqgetStr(tmpArray[0]));
+    	    		al.add(tmpArray[0]+";"+reSequence+";"+individualStr(tmpArray[0])+seqgetStr(tmpArray[0]));
     	    		i++;
     	    	}
     	    }
@@ -92,6 +85,19 @@ public class App
     	}catch(Exception ex){
     		ex.printStackTrace();
     	}
+	}
+    public static void main( String[] args )
+    {
+    	//PrepareInput app = new PrepareInput();
+    	/*
+    	System.out.println(app.seqgetStr("AcuI"));
+    	System.out.println(app.seqgetStr("AbaAI"));
+    	System.out.println(app.seqgetStr("AbaBGI"));
+    	System.out.println(app.seqgetStr("AbaCI"));
+    	*/
+    	//app.func();
+    	PrepareCDHit app = new PrepareCDHit();
+    	app.readgenerateSeqClusters("E:\\REBASE\\CDHIT\\1478816416.fas.1.clstr.sorted", "E:\\REBASE\\CDHIT\\out\\");
     }
     
     String seqgetStr(String proteinName){
