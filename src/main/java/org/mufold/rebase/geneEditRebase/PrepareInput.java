@@ -26,11 +26,12 @@ public class PrepareInput
     		
     		//Document document = Jsoup.parse( new File( "E:\\REBASE\\NoPutative\\REBASE Enzymes.html" ) , "utf-8" );
     		Document document = Jsoup.parse( new File( "E:\\REBASE\\Putative\\REBASE Enzymes.html" ) , "utf-8" );
+    		//Document document = Jsoup.parse( new File( "E:\\REBASE\\GoldStandard\\REBASE Gold Standards.html" ) , "utf-8" );
     		Elements links = document.select("tr");
     		ArrayList<String> al = new ArrayList<String>();
     		int i=0;
     	    for (Element link : links) 
-    	    {    	    	
+    	    {    
     	    	if(link.attributes().toString().trim().equals("bgcolor=\"#FFFFFF\"")){
     	    		//System.out.println("link : " + link.attributes()); 
     	    		//System.out.println("text : " + link.text()); 
@@ -51,7 +52,8 @@ public class PrepareInput
     	    	}
     	    }
     	    //FileUtils.writeLines(new File("E:\\REBASE\\rebaseall_NoPutative.txt"), al);
-    	    FileUtils.writeLines(new File("E:\\REBASE\\rebaseall_Putative.txt"), al); 
+    	    FileUtils.writeLines(new File("E:\\REBASE\\rebaseall_Putative.txt"), al);
+    	    //FileUtils.writeLines(new File("E:\\REBASE\\rebaseall_GoldStandard.txt"), al); 
 
     	    //Another version
     	    /*
@@ -86,18 +88,94 @@ public class PrepareInput
     		ex.printStackTrace();
     	}
 	}
+	
+	
+	void funcGoldStandard(){
+		try{  
+    		
+    		//Document document = Jsoup.parse( new File( "E:\\REBASE\\NoPutative\\REBASE Enzymes.html" ) , "utf-8" );
+    		//Document document = Jsoup.parse( new File( "E:\\REBASE\\Putative\\REBASE Enzymes.html" ) , "utf-8" );
+    		Document document = Jsoup.parse( new File( "E:\\REBASE\\GoldStandard\\REBASE Gold Standards.html" ) , "utf-8" );
+    		Elements links = document.select("tr");
+    		ArrayList<String> al = new ArrayList<String>();
+    		int i=0;
+    	    for (Element link : links) 
+    	    {    
+    	    	if(link.attributes().toString().trim().equals("align=\"left\" bgcolor=\"#FFFFFF\"")){
+    	    		System.out.println("link : " + link.attributes()); 
+    	    		System.out.println("text : " + link.text()); 
+    	    		String[] tmpArray = link.text().split("\\s+");
+    	    		
+    	    		String reSequence = "";
+    	    		if(link.childNodes().get(3).childNodes().get(0).childNodes().isEmpty()){
+    	    			reSequence = "-";
+    	    		}else{
+    	    		
+    	    		List<Node> nodeList = link.childNodes().get(3).childNodes().get(0).childNodes().get(0).childNodes();
+    	    		//System.out.println(nodeList.size());
+    	    		
+    	    		for(Node node:nodeList){
+    	    			if(node.toString().startsWith("<img")){
+    	    				reSequence += "^";
+    	    			}else{
+    	    				reSequence += node;
+    	    			}
+    	    		}
+    	    		}
+    	    		
+    	    		al.add(tmpArray[0]+";"+reSequence+";"+individualStr(tmpArray[0])+seqgetStr(tmpArray[0]));
+    	    		i++;
+    	    	}
+    	    }
+    	    //FileUtils.writeLines(new File("E:\\REBASE\\rebaseall_NoPutative.txt"), al);
+    	    //FileUtils.writeLines(new File("E:\\REBASE\\rebaseall_Putative.txt"), al);
+    	    FileUtils.writeLines(new File("E:\\REBASE\\rebaseall_GoldStandard.txt"), al); 
+
+    	    //Another version
+    	    /*
+    		//Document document = Jsoup.connect("http://rebase.neb.com/cgi-bin/azlist?re2").get();
+    		//Document document = Jsoup.parse( new File( "E:\\REBASE\\REBASE Enzymes.html" ) , "utf-8" );
+    		Document document = Jsoup.parse( new File( "E:\\REBASE\\No_Putative\\REBASE Enzymes.html" ) , "utf-8" );
+    		Elements links = document.select("a[href]");
+    		ArrayList<String> al = new ArrayList<String>();
+    		int i=0;
+    	    for (Element link : links) 
+    	    {
+    	    	if(link.attr("target").equals("enz")){
+    	    		//System.out.println("link : " + link.attr("href")); 
+    	    		//ystem.out.println("text : " + link.text()); 
+    	    		al.add(app.individualStr(link.text()));
+    	    		i++;
+    	    	}
+    	    }
+    	    
+    	    FileUtils.writeLines(new File("E:\\REBASE\\rebaseall.txt"), al);   		
+    		*/
+    		/*
+    		System.out.println(app.individualStr("AaaI"));
+    		System.out.println(app.individualStr("AacAA1ORF2169P"));
+    		System.out.println(app.individualStr("Aac41ORF1782P"));
+    	    System.out.println(app.individualStr("AamI"));
+    		System.out.println(app.individualStr("AarI"));
+    		System.out.println(app.individualStr("NmeI"));
+    		*/	
+    	    
+    	}catch(Exception ex){
+    		ex.printStackTrace();
+    	}
+	}
+	
     public static void main( String[] args )
     {
-    	//PrepareInput app = new PrepareInput();
     	/*
-    	System.out.println(app.seqgetStr("AcuI"));
-    	System.out.println(app.seqgetStr("AbaAI"));
-    	System.out.println(app.seqgetStr("AbaBGI"));
-    	System.out.println(app.seqgetStr("AbaCI"));
+    	PrepareInput app = new PrepareInput();
+    	app.funcGoldStandard();
     	*/
-    	//app.func();
+    	
     	PrepareCDHit app = new PrepareCDHit();
-    	app.readgenerateSeqClusters("E:\\REBASE\\CDHIT\\1478816416.fas.1.clstr.sorted", "E:\\REBASE\\CDHIT\\out\\");
+    	//app.readgenerateSeqClusters("E:\\REBASE\\CDHIT\\1478816416.fas.1.clstr.sorted", "E:\\REBASE\\CDHIT\\out\\");
+    	//app.readgenerateSeqClustersSelf("E:\\REBASE\\rebenz.txt", "E:\\REBASE\\CDHIT\\1478816416.fas.1.clstr.sorted", "E:\\REBASE\\CDHIT\\out\\");
+    	app.readgenerateSeqClustersSelf("E:\\REBASE\\rebenz_goldstandard.txt", "E:\\REBASE\\CDHIT_Standard\\1478916199.fas.1.clstr.sorted", "E:\\REBASE\\CDHIT_Standard\\out\\");
     }
     
     String seqgetStr(String proteinName){
